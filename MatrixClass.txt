@@ -18,7 +18,7 @@ Development Plan:
 2. Array Plan:	Matt<> & Matts<>	See  ArrayOps.txt
 	N dim. arrays
 	Reference arrays for slices (sub-arrays)
-	Broadcasting
+	Broadcasting 
 
 ============================================================
 PLAN: Matrix Operators:		
