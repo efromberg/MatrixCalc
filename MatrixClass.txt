@@ -1,0 +1,172 @@
+Matrix S/W			3/2/2020
+Development Plan:
+1. Matrix - 2D matrices
+2. Array  - ND arrays, ala Numpy
+  Need error handling system.
+
+1. Matrix Plan:	Matt<>
+	2D matrices only. Set defaults for 2D. Remove CTOR 2-B
+	#undef USE_MATTS, USE_ABC
+		Slice array: TBI (not implemented)
+	Remove Matts<>, CTOR 2-B
+	Limited functionality ( ? means )
+	Matrix mult, inverse
+	Simplified stride, print, index funcs.
+	Limited broadcasting (scaler+matrix)
+	
+
+2. Array Plan:	Matt<> & Matts<>	See  ArrayOps.txt
+	N dim. arrays
+	Reference arrays for slices (sub-arrays)
+	Broadcasting
+
+============================================================
+PLAN: Matrix Operators:		
+	Declared in Mat.h, Defined in Matimp.h
+
+A(nr, nc)		index
+A = B			assignment
+A << vector<T>	read what fits
+A >> vector<T>  write
+C = A + B		add
+C = A - B		subtract
+C = A * B		matrix mult
+C = A / B
+
+
+
+
+===========================================================
+MATRIX USER GUIDE:
+
+TOC
+1. Intro
+1.1 Array types
+1.2 Array operators
+
+1.9 Future Arrays
+
+C. Comaparison to other libraries
+R. References
+
+
+
+1.0 Introduction
+	Matrix vs Array.
+
+	This library implements a C++ matrix/array class.
+The matrices and arrays can be of any numeric data type;
+the number of axes/dimensions is flexible, with no fixed
+limits. The matrix/array values are stored in a single contiguous
+array of values in either column-major or row major format;
+indexing is zero based in either case.
+	C++ operators are overloaded so that matrix objects can
+be used in ordinary algebraic expressions, such as:
+	A = B*C + D, where A,B,C,D are matrices of compatible sizes.
+	The templated matrix class is defined as  Matt<T,St> in 
+the file Mat.h, where T is the numeric datatype, such as 
+<float>, <double>, etc. and St is the storage type, an
+integer in enum Stortype, which is either C (dense, row-major), 
+F (dense, column-major) or S ( sparse, TBI).
+	The number and size of the array axes (or dimensions) is
+specified during construction; these can be changed later.
+The array/matrix data type and storage type are template
+parameters and cannot be changed after construction; however,
+the data can be copied to arrays of other types.
+
+1.1 Array Types
+	Array construction requires specifying 2 types: the numeric
+data type, such as double, complex<float>, etc. and the storage order,
+which can be F for dense, column-major (as in Fortran) or C
+for dense, row-major (as in C/C++). The default is F. These
+cannot be changed during the lifetime of the array object.
+Constructor parameters include the size of each axis/dimension,
+as well as a name (for printouts, etc.). The initial sizes
+may be zero; they would be set/reset later when the array is
+loaded with data.  The default number of axes/dimensions is 2,
+for matrices (MxN), column vectors (Mx1) and row vectors (1xM).
+
+	Examples:
+
+#include "Mat.h"
+
+Matt<double, F> matd2;	
+		constructs a 0 x 0 matrix, no data, column-major
+
+Matt<double> matd3(2,3,"matd3");
+		constructs a 2 x 3 matrix, all zeros, column-major(default)
+
+1.2 Array Operators
+	Access/assign array elements with the index operator():
+	A(2,3) = 17.;  or
+	x = A(2,3);
+	
+	Assign/copy from/to an array:
+	A = B;
+	The number of axes/dimensions and range of each axis of A
+will be the same as B's. The original data of A will be lost;
+the original number and axis ranges are changed to match B.
+
+	Load data into an array:
+	vector<double> vdata = {...}
+	A << vdata;
+		Loads the data from vdata into array A, using the
+read what fits philosophy. Similarly, one can write:
+	A >> vdata;
+		The size of vdata is set to hold all of A.
+
+	Arithmetic operators, +, -.
+	Arrays of compatible sizes can be added or differenced:
+	C = A + B;  or
+	C = C - B;
+
+
+
+
+============================================================
+TECHNICAL REFERENCE
+
+
+
+
+============================================================
+C. COMPARISON
+
+	MV++	https://math.nist.gov/mv++/main.pdf
+	uBLAS	https://svn.boost.org/svn/boost/trunk/libs/numeric/ublas/doc/overview.htm
+	BLAS
+	Blitz++
+	POOMA
+	MTL
+	Python - Numpy	https://docs.scipy.org/doc/numpy/user/basics.indexing.html#combining-index-arrays-with-slices
+	Julia
+	Fortran
+	Matlab/Octave
+
+
+--------------------------------------------------------------
+R. References
+1. Boost Multidimensional Array Library 
+https://www.boost.org/doc/libs/1_55_0/libs/multi_array/doc/user.html
+
+2. ~/Documents/Blitz/n3851-Arrays.pdf
+	Multidimensional arrays for C++- proposed spec.
+
+------------------------------------------------------------
+Other:
+
+class Mat (ABC)
+	Mat is the ABC (Abstract Base Class) of the matrix
+class Matt. It cannot be instantiated by itself, only as part
+of the class Matt<T>.
+
+class Matt<T>
+	Matt is the actual matrix class, which contains the
+internal array of values.  The data array is of type T,
+where T = float, double, complex<float>, complex<double>
+and possibly additional numerical types (future).
+
+Symbol Tables
+$ nm -lCn libmtrx1.so > libmtrx-gcc.txt
+
+
